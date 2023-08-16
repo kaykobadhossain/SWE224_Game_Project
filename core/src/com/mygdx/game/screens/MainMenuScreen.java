@@ -9,11 +9,11 @@ import com.mygdx.game.MyGdxGame;
 public class MainMenuScreen implements Screen {
 
     public static final int Exit_Button_Width=300;
-    public static final int Exit_Button_Height=150;
-    public static final int Play_Button_Width=330;
-    public static final int Play_Button_Height=150;
-    public static final int Exit_Button_Y =125;
-    public static final int Play_Button_Y=200;
+    public static final int Exit_Button_Height=120;
+    public static final int Play_Button_Width=300;
+    public static final int Play_Button_Height=120;
+    public static final int Exit_Button_Y =100;
+    public static final int Play_Button_Y=230;
 
 
     Texture playButtonActive;
@@ -37,7 +37,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1,0,0,1);
+        Gdx.gl.glClearColor(0.15f,0.15f,.3f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
 
@@ -45,6 +45,10 @@ public class MainMenuScreen implements Screen {
         if(Gdx.input.getX()>x && Gdx.input.getX()<x+Exit_Button_Width && MyGdxGame.Height-Gdx.input.getY()>Exit_Button_Y && MyGdxGame.Height-Gdx.input.getY()<Exit_Button_Y+Exit_Button_Height)
         {
             game.batch.draw(exitButtonActive,x,Exit_Button_Y,Exit_Button_Width,Exit_Button_Height);
+            if(Gdx.input.isTouched())
+            {
+               Gdx.app.exit();
+            }
 
         }
         else{
@@ -55,6 +59,11 @@ public class MainMenuScreen implements Screen {
         if(Gdx.input.getX()>x && Gdx.input.getX()<x+Play_Button_Width && MyGdxGame.Height-Gdx.input.getY()>Play_Button_Y && MyGdxGame.Height-Gdx.input.getY()<Play_Button_Y+Play_Button_Height)
         {
             game.batch.draw(playButtonActive,x,Play_Button_Y,Play_Button_Width,Play_Button_Height);
+            if(Gdx.input.isTouched())
+            {
+                this.dispose();
+                game.setScreen(new MainGameScreen(game));
+            }
 
         }
         else{
