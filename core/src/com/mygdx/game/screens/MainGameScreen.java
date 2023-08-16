@@ -62,16 +62,29 @@ public class MainGameScreen implements Screen {
             if(x<0){
                 x=0;
             }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && Gdx.input.isKeyPressed(Input.Keys.RIGHT) && roll>0 ){
+                rollTimer=0;
+                roll--;
+            }
+
+
             rollTimer-=Gdx.graphics.getDeltaTime();
-            if(Math.abs(rollTimer)>ROLL_TIMER_SWITCH_TIME)
+            if(Math.abs(rollTimer)>ROLL_TIMER_SWITCH_TIME && roll>0)
             {
                 rollTimer=0;
                 roll--;
-                if(roll<0){
-                    roll=0;
-                }
             }
 
+        }else {
+            if(roll<2){
+                rollTimer+=Gdx.graphics.getDeltaTime();
+                if(Math.abs(rollTimer)>ROLL_TIMER_SWITCH_TIME && roll<4)
+                {
+                    rollTimer=0;
+                    roll++;
+                }
+
+            }
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
@@ -79,17 +92,26 @@ public class MainGameScreen implements Screen {
             if(x+SHIP_WIDTH >Gdx.graphics.getWidth())
                 x=Gdx.graphics.getWidth()-SHIP_WIDTH;
 
+
+
             rollTimer+=Gdx.graphics.getDeltaTime();
-            if(Math.abs(rollTimer)>ROLL_TIMER_SWITCH_TIME)
+            if(Math.abs(rollTimer)>ROLL_TIMER_SWITCH_TIME && roll<4)
             {
                 rollTimer=0;
                 roll++;
 
-                if(roll>4){
-                    roll=4;
-                }
             }
 
+        } else{
+            if(roll>2){
+                rollTimer-=Gdx.graphics.getDeltaTime();
+                if(Math.abs(rollTimer)>ROLL_TIMER_SWITCH_TIME && roll >0)
+                {
+                    rollTimer=0;
+                    roll--;
+
+                }
+            }
         }
 
         stateTime +=delta;
