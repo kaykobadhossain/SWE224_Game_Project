@@ -117,7 +117,6 @@ public class MainGameScreen implements Screen {
             }
 
         }
-        asteroids.removeAll(asteriosToRemove);
 
 
         ArrayList<Bullets>bulletsToRemove = new ArrayList<Bullets>();
@@ -130,7 +129,6 @@ public class MainGameScreen implements Screen {
             }
         }
 
-        bullets.removeAll(bulletsToRemove);
 
 
 
@@ -195,6 +193,25 @@ public class MainGameScreen implements Screen {
                 }
             }
         }
+
+
+        for(Bullets bullet :bullets)
+        {
+            for(Asteroids asteroid :asteroids)
+            {
+                if(bullet.getCollisionRect().collidesWith(asteroid.getCollisionRect()))
+                {
+                    bulletsToRemove.add(bullet);
+                    asteriosToRemove.add(asteroid);
+
+
+                }
+            }
+        }
+        asteroids.removeAll(asteriosToRemove);
+        bullets.removeAll(bulletsToRemove);
+
+
 
         stateTime +=delta;
         Gdx.gl.glClearColor(0,0,0,1);

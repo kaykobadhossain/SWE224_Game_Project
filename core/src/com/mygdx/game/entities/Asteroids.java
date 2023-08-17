@@ -3,6 +3,7 @@ package com.mygdx.game.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.tools.CollisionRect;
 
 public class Asteroids {
     public static final int SPEED=250 ;
@@ -10,12 +11,15 @@ public class Asteroids {
     public static final int WIDTH=16 ;
     public static Texture texture;
     float x,y;
+    CollisionRect rect;
+
     public boolean remove =false;
 
     public Asteroids(float x)
     {
         this.x=x;
         this.y=Gdx.graphics.getHeight();
+        this.rect=new CollisionRect(x,y,WIDTH,HEIGHT);
 
 
         if(texture==null) {
@@ -31,9 +35,15 @@ public class Asteroids {
         {
             remove=true;
         }
+        rect.move(x,y);
+
     }
     public void render (SpriteBatch batch)
     {
         batch.draw(texture,x,y);
+    }
+    public CollisionRect getCollisionRect()
+    {
+        return rect;
     }
 }
