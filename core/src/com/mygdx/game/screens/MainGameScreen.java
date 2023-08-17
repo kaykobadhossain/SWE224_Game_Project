@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.entities.Bullets;
+
+import java.util.ArrayList;
 
 public class MainGameScreen implements Screen {
     public static final float SPEED = 200;
@@ -30,14 +33,21 @@ public class MainGameScreen implements Screen {
 
     MyGdxGame game;
 
+    ArrayList<Bullets>bullets;
+
+
     public MainGameScreen (MyGdxGame game) {
         this.game = game;
         y = 15;
         x = (float) MyGdxGame.Width / 2 - (float) SHIP_WIDTH / 2;
 
+        bullets=new ArrayList<Bullets>();
+
         roll = 2;
         rollTimer=0;
         rolls = new Animation[5];
+
+
 
         TextureRegion[][] rollSpriteSheet = TextureRegion.split(new Texture("ship.png"), SHIP_WIDTH_PIXEL, SHIP_HEIGHT_PIXEL);
 
@@ -55,6 +65,27 @@ public class MainGameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            bullets.add(new Bullets(x+4));
+            bullets.add(new Bullets(x+SHIP_WIDTH-4));
+
+        }
+
+        ArrayList<Bullets>bulletsToRemove = new ArrayList<Bullets>();
+        for(Bullets bullet : bullets)
+        {
+            bullet.update(delta);
+            if(bullet.remove)
+            {
+                bulletsToRemove.add(bullet);
+            }
+        }
+
+        bullets.removeAll(bulletsToRemove);
+
+
+
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
             x-=SPEED*Gdx.graphics.getDeltaTime();
@@ -118,6 +149,11 @@ public class MainGameScreen implements Screen {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
+        for(Bullets bullet :bullets)
+        {
+            bullet.render(game.batch);
+
+        }
         game.batch.draw((TextureRegion) rolls[roll].getKeyFrame(stateTime, true), x, y, SHIP_WIDTH, SHIP_HEIGHT);
         game.batch.end();
 
