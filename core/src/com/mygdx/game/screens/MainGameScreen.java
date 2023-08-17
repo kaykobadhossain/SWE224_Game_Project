@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.entities.Asteroids;
 import com.mygdx.game.entities.Bullets;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainGameScreen implements Screen {
     public static final float SPEED = 200;
@@ -22,6 +24,8 @@ public class MainGameScreen implements Screen {
     public static final int SHIP_HEIGHT = SHIP_HEIGHT_PIXEL * 3;
     public static final float ROLL_TIMER_SWITCH_TIME =0.15f;
     public static final float SHOOT_WAIT_TIME=0.3f;
+    public static final float MIN_ASTEROIDS_SPAWN_TIME=0.3f;
+    public static final float MAX_ASTEROIDS_SPAWN_TIME=0.6f;
 
 
 
@@ -32,11 +36,13 @@ public class MainGameScreen implements Screen {
     float stateTime;
     float rollTimer;
     float shootTimer;
+    float asteroidsSpawnTimer;
 
-
+    Random random;
     MyGdxGame game;
 
     ArrayList<Bullets>bullets;
+    ArrayList<Asteroids>asteroids;
 
 
     public MainGameScreen (MyGdxGame game) {
@@ -45,6 +51,10 @@ public class MainGameScreen implements Screen {
         x = (float) MyGdxGame.Width / 2 - (float) SHIP_WIDTH / 2;
 
         bullets=new ArrayList<Bullets>();
+        asteroids=new ArrayList<Asteroids>();
+        random=new Random();
+
+        asteroidsSpawnTimer = random.nextFloat()* (MAX_ASTEROIDS_SPAWN_TIME- MIN_ASTEROIDS_SPAWN_TIME)+MIN_ASTEROIDS_SPAWN_TIME;
 
         shootTimer=0;
         roll = 2;
@@ -89,6 +99,26 @@ public class MainGameScreen implements Screen {
             bullets.add(new Bullets(x+SHIP_WIDTH-offset));
 
         }
+        asteroidsSpawnTimer-=delta;
+
+        if(asteroidsSpawnTimer <= 0)
+        {
+            asteroidsSpawnTimer=random.nextFloat()* (MAX_ASTEROIDS_SPAWN_TIME- MIN_ASTEROIDS_SPAWN_TIME)+MIN_ASTEROIDS_SPAWN_TIME;
+            asteroids.add(new Asteroids(random.nextInt(Gdx.graphics.getWidth()-Asteroids.WIDTH)));
+
+        }
+
+        ArrayList<Asteroids>asteriosToRemove = new ArrayList<Asteroids>();
+        for(Asteroids asteroid : asteroids)
+        {
+            asteroid.update(delta);
+            if(asteroid.remove) {
+                asteriosToRemove.add(asteroid);
+            }
+
+        }
+        asteroids.removeAll(asteriosToRemove);
+
 
         ArrayList<Bullets>bulletsToRemove = new ArrayList<Bullets>();
         for(Bullets bullet : bullets)
@@ -175,6 +205,12 @@ public class MainGameScreen implements Screen {
             bullet.render(game.batch);
 
         }
+        for(Asteroids asteroid :asteroids)
+        {
+            asteroid.render(game.batch);
+
+        }
+
         game.batch.draw((TextureRegion) rolls[roll].getKeyFrame(stateTime, true), x, y, SHIP_WIDTH, SHIP_HEIGHT);
         game.batch.end();
 
